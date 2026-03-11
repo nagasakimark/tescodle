@@ -161,8 +161,10 @@ function buildImageUrls(product) {
 
   // 1. Locally uploaded image (saved by upload_server.py into /images/)
   //    These are stored as /images/<pid>.jpg|png|webp in products.json
+  //    Strip the leading slash to get a relative path that works on GitHub Pages
+  //    (/images/x.jpg → images/x.jpg prevents the /tescodle/ subpath being lost)
   if (product.image_url && product.image_url.startsWith("/images/")) {
-    urls.push(product.image_url);
+    urls.push(product.image_url.replace(/^\//, ""));
     return urls; // local image is definitive — no need to try CDN
   }
 
