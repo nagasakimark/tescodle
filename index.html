@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>テスコデル — UK食品価格ゲーム</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Oswald:wght@600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇯🇵</text></svg>" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header id="site-header">
+    <div class="header-inner">
+      <img src="logo.png" alt="テスコデル" class="site-logo" />
+      <div class="header-right">
+        <button id="how-btn" aria-label="遊び方" title="遊び方">？</button>
+      </div>
+    </div>
+    <p class="site-subtitle">イギリスのスーパーの値段を日本円で当てよう！</p>
+  </header>
+
+  <!-- ===== HOW TO PLAY MODAL ===== -->
+  <div id="how-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="how-title">
+    <div class="modal-box">
+      <button class="modal-close" id="how-close" aria-label="閉じる">✕</button>
+      <h2 id="how-title">遊び方</h2>
+      <ul>
+        <li>毎日ひとつの英国スーパー商品が登場します。</li>
+        <li>商品の写真と日本語名を見て、価格を日本円（¥）で予想してください。</li>
+        <li>予想を入力したら <strong>決定</strong> を押します。何回でも挑戦できます！</li>
+      </ul>
+      <h3>ヒントの見方</h3>
+      <div class="hint-legend">
+        <div class="hint-row"><span class="chip exact">✓</span><span>ピッタリ正解！（<strong>5%以内</strong>でも正解）</span></div>
+        <div class="hint-row"><span class="chip yellow">▲ / ▼</span><span>差額 <strong>10%以内</strong></span></div>
+        <div class="hint-row"><span class="chip orange">▲ / ▼</span><span>差額 <strong>11〜25%</strong></span></div>
+        <div class="hint-row"><span class="chip red">▲ / ▼</span><span>差額 <strong>26〜49%</strong></span></div>
+        <div class="hint-row"><span class="chip ice">▲ / ▼</span><span>差額 <strong>50%以上</strong>（かなり遠い）</span></div>
+      </div>
+      <p class="hint-note">矢印は正解の方向を示します：▲ = もっと高い　▼ = もっと安い</p>
+    </div>
+  </div>
+
+  <!-- ===== RESULT MODAL ===== -->
+  <div id="result-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="result-title">
+    <div class="modal-box result-modal-box">
+      <h2 id="result-title"></h2>
+      <p id="result-message"></p>
+
+      <div id="product-reveal">
+        <div id="reveal-image-wrap">
+          <img id="reveal-img" alt="商品" />
+          <div id="reveal-placeholder" class="img-placeholder hidden">🛒</div>
+        </div>
+        <p id="reveal-name-ja"></p>
+        <p id="reveal-name-en"></p>
+        <p id="reveal-price-uk"></p>
+        <p id="reveal-price-yen" class="reveal-yen"></p>
+      </div>
+
+      <p id="next-info"></p>
+    </div>
+  </div>
+
+  <!-- ===== MAIN GAME ===== -->
+  <main id="main">
+
+    <!-- Loading -->
+    <div id="loading-section">
+      <div class="spinner"></div>
+      <p id="loading-msg">読み込み中…</p>
+    </div>
+
+    <!-- Game area (hidden until loaded) -->
+    <div id="game-section" class="hidden">
+
+      <!-- Product card -->
+      <div id="product-card">
+        <div id="product-image-wrap">
+          <img id="product-img" alt="商品" />
+          <div id="product-placeholder" class="img-placeholder hidden">🛒</div>
+        </div>
+        <div class="product-info">
+          <p id="product-name-en"></p>
+          <p id="product-name-ja" aria-live="polite"></p>
+          <p id="product-price-yen"></p>
+          <div class="price-divider"></div>
+          <p id="guess-counter" class="guess-counter">予想 <span id="guess-num">1</span> 回目</p>
+        </div>
+      </div>
+
+      <!-- Right column: guesses + input -->
+      <div id="right-col">
+
+        <!-- Previous guesses -->
+        <section id="guesses-section" aria-label="今までの予想">
+          <ul id="guesses-list"></ul>
+        </section>
+
+        <!-- Input row -->
+        <div id="input-row">
+          <div class="yen-field">
+            <span class="yen-symbol">¥</span>
+            <input
+              id="guess-input"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max="99999"
+              placeholder="0"
+              aria-label="日本円で金額を入力"
+              autocomplete="off"
+            />
+          </div>
+          <button id="submit-btn">決定</button>
+        </div>
+
+      </div><!-- /right-col -->
+
+    </div><!-- /game-section -->
+
+  </main>
+
+  <footer>
+    <p>価格はテスコ（UK）の実際の販売価格を基にしています。為替レート: 1£ = ¥196 &nbsp;·&nbsp; <a href="https://www.costcodle.com" target="_blank" rel="noopener" style="color:inherit">Costcodle</a> にインスパイアされました</p>
+  </footer>
+
+  <script src="game.js"></script>
+</body>
+</html>

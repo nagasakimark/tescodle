@@ -1,0 +1,9 @@
+# Python
+*.py
+*.pyc
+__pycache__/
+.venv/
+
+# Source/admin data
+products.csv
+image_admin.html
