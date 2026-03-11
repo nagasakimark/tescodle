@@ -13,7 +13,8 @@
 /* ================================================================
    CONFIG
    ================================================================ */
-const GAME_EPOCH  = Date.UTC(2026, 0, 1); // 1 Jan 2026 = day 0
+const GAME_EPOCH  = Date.UTC(2026, 0, 1); // 1 Jan 2026 = day 0 (JST)
+const JST_OFFSET_MS = 9 * 60 * 60 * 1000; // UTC+9
 
 /* Closeness thresholds (% diff from actual; anything ≥50% = ice) */
 const THRESHOLDS = { yellow: 10, orange: 25, red: 49 };
@@ -64,8 +65,10 @@ let state = {
    DATE / PRODUCT SELECTION
    ================================================================ */
 function todayUTC() {
-  const now   = new Date();
-  const dayMs = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  // Shift to JST (UTC+9) before extracting the calendar date so the
+  // daily rollover happens at midnight Japan time, not midnight UTC.
+  const jst   = new Date(Date.now() + JST_OFFSET_MS);
+  const dayMs = Date.UTC(jst.getUTCFullYear(), jst.getUTCMonth(), jst.getUTCDate());
   return { dayMs, gameDay: Math.floor((dayMs - GAME_EPOCH) / 86_400_000) };
 }
 
