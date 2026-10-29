@@ -6,62 +6,75 @@
   <title>テスコデル — UK食品価格ゲーム</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Oswald:wght@600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&family=Oswald:wght@600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇯🇵</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
 </head>
 <body>
+  <canvas id="confetti"></canvas>
 
   <!-- ===== HEADER ===== -->
   <header id="site-header">
     <div class="header-inner">
+      <div class="header-left">
+        <span id="mode-badge" class="mode-badge daily">📅 きょうの しょうひん</span>
+      </div>
       <img src="logo.png" alt="テスコデル" class="site-logo" />
       <div class="header-right">
-        <button id="how-btn" aria-label="遊び方" title="遊び方">？</button>
+        <button id="sound-btn" aria-label="おと" title="おと">🔊</button>
+        <button id="how-btn" aria-label="あそびかた" title="あそびかた">？</button>
       </div>
     </div>
-    <p class="site-subtitle">イギリスのスーパーの値段を日本円で当てよう！</p>
+    <p class="site-subtitle">🇬🇧 イギリスの スーパーの ねだんを にほんえん（¥）で あてよう！</p>
   </header>
 
   <!-- ===== HOW TO PLAY MODAL ===== -->
   <div id="how-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="how-title">
     <div class="modal-box">
-      <button class="modal-close" id="how-close" aria-label="閉じる">✕</button>
-      <h2 id="how-title">遊び方</h2>
+      <button class="modal-close" id="how-close" aria-label="とじる">✕</button>
+      <h2 id="how-title">あそびかた</h2>
       <ul>
-        <li>毎日ひとつの英国スーパー商品が登場します。</li>
-        <li>商品の写真と日本語名を見て、価格を日本円（¥）で予想してください。</li>
-        <li>予想を入力したら <strong>決定</strong> を押します。何回でも挑戦できます！</li>
+        <li>まいにち イギリスの スーパー「テスコ」の しょうひんが ひとつ でるよ。</li>
+        <li>しゃしんと なまえを みて、ねだんを <strong>にほんえん（¥）</strong>で よそう しよう！</li>
+        <li>なんかい でも チャレンジ できるよ。<strong>5%</strong> いないなら せいかい！</li>
       </ul>
-      <h3>ヒントの見方</h3>
+      <h3>ヒントの みかた</h3>
       <div class="hint-legend">
-        <div class="hint-row"><span class="chip exact">✓</span><span>ピッタリ正解！（<strong>5%以内</strong>でも正解）</span></div>
-        <div class="hint-row"><span class="chip yellow">▲ / ▼</span><span>差額 <strong>10%以内</strong></span></div>
-        <div class="hint-row"><span class="chip orange">▲ / ▼</span><span>差額 <strong>11〜25%</strong></span></div>
-        <div class="hint-row"><span class="chip red">▲ / ▼</span><span>差額 <strong>26〜49%</strong></span></div>
-        <div class="hint-row"><span class="chip ice">▲ / ▼</span><span>差額 <strong>50%以上</strong>（かなり遠い）</span></div>
+        <div class="hint-row"><span class="chip exact">🎯</span><span>せいかい！（5% いない）</span></div>
+        <div class="hint-row"><span class="chip yellow">🔥</span><span>あと すこし！（10% いない）</span></div>
+        <div class="hint-row"><span class="chip orange">😊</span><span>ちかい！（25% いない）</span></div>
+        <div class="hint-row"><span class="chip red">🤔</span><span>まだ とおい（50% いない）</span></div>
+        <div class="hint-row"><span class="chip ice">🧊</span><span>すごく とおい（50% いじょう）</span></div>
       </div>
-      <p class="hint-note">矢印は正解の方向を示します：▲ = もっと高い　▼ = もっと安い</p>
+      <p class="hint-note">⬆ もっと たかい　⬇ もっと やすい　｜　きょうの しょうひんが おわったら 🎯れんしゅう で もっと あそべるよ！</p>
+      <button id="how-start" class="big-btn red">はじめる！</button>
     </div>
   </div>
 
   <!-- ===== RESULT MODAL ===== -->
   <div id="result-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="result-title">
     <div class="modal-box result-modal-box">
+      <button class="modal-close" id="result-close" aria-label="とじる">✕</button>
       <h2 id="result-title"></h2>
       <p id="result-message"></p>
 
       <div id="product-reveal">
         <div id="reveal-image-wrap">
-          <img id="reveal-img" alt="商品" />
+          <img id="reveal-img" alt="しょうひん" />
           <div id="reveal-placeholder" class="img-placeholder hidden">🛒</div>
         </div>
-        <p id="reveal-name-ja"></p>
-        <p id="reveal-name-en"></p>
-        <p id="reveal-price-uk"></p>
-        <p id="reveal-price-yen" class="reveal-yen"></p>
+        <div class="reveal-text">
+          <p id="reveal-name-ja"></p>
+          <p id="reveal-name-en"></p>
+          <p id="reveal-price-yen" class="reveal-yen"></p>
+          <p id="reveal-price-uk"></p>
+        </div>
       </div>
 
+      <div class="btn-row">
+        <button id="practice-btn" class="big-btn blue">🎯 べつの しょうひんで れんしゅう</button>
+        <button id="daily-btn" class="big-btn red hidden">📅 きょうの しょうひん</button>
+      </div>
       <p id="next-info"></p>
     </div>
   </div>
@@ -72,7 +85,7 @@
     <!-- Loading -->
     <div id="loading-section">
       <div class="spinner"></div>
-      <p id="loading-msg">読み込み中…</p>
+      <p id="loading-msg">よみこみ ちゅう…</p>
     </div>
 
     <!-- Game area (hidden until loaded) -->
@@ -81,23 +94,30 @@
       <!-- Product card -->
       <div id="product-card">
         <div id="product-image-wrap">
-          <img id="product-img" alt="商品" />
+          <img id="product-img" alt="しょうひん" />
           <div id="product-placeholder" class="img-placeholder hidden">🛒</div>
+          <p id="product-price-yen"></p>
         </div>
         <div class="product-info">
-          <p id="product-name-en"></p>
           <p id="product-name-ja" aria-live="polite"></p>
-          <p id="product-price-yen"></p>
-          <div class="price-divider"></div>
-          <p id="guess-counter" class="guess-counter">予想 <span id="guess-num">1</span> 回目</p>
+          <p id="product-name-en"></p>
         </div>
       </div>
 
-      <!-- Right column: guesses + input -->
+      <!-- Right column: range + guesses + input -->
       <div id="right-col">
 
+        <div id="range-box">
+          <p id="range-text"></p>
+          <div class="range-track">
+            <div id="range-fill" class="range-fill"></div>
+          </div>
+          <div class="range-labels"><span id="range-low"></span><span id="range-high"></span></div>
+        </div>
+
         <!-- Previous guesses -->
-        <section id="guesses-section" aria-label="今までの予想">
+        <section id="guesses-section" aria-label="いままでの よそう">
+          <p id="empty-guesses" class="empty-guesses">👇 したに ねだんを いれて「けってい」を おそう！</p>
           <ul id="guesses-list"></ul>
         </section>
 
@@ -107,16 +127,23 @@
             <span class="yen-symbol">¥</span>
             <input
               id="guess-input"
-              type="number"
+              type="text"
               inputmode="numeric"
-              min="1"
-              max="99999"
-              placeholder="0"
-              aria-label="日本円で金額を入力"
+              maxlength="7"
+              placeholder="れい: 300"
+              aria-label="にほんえんで ねだんを いれる"
               autocomplete="off"
             />
           </div>
-          <button id="submit-btn">決定</button>
+          <button id="submit-btn">けってい <span class="guess-counter">（<span id="guess-num">1</span>かいめ）</span></button>
+          <p id="input-error" role="alert"></p>
+        </div>
+
+        <!-- Shown after finishing -->
+        <div id="done-row" class="hidden">
+          <button id="show-result-btn" class="big-btn gray">📋 けっか</button>
+          <button id="done-practice-btn" class="big-btn blue">🎯 れんしゅう</button>
+          <button id="done-daily-btn" class="big-btn red hidden">📅 きょうの しょうひん</button>
         </div>
 
       </div><!-- /right-col -->
@@ -126,9 +153,10 @@
   </main>
 
   <footer>
-    <p>価格はテスコ（UK）の実際の販売価格を基にしています。為替レート: 1£ = ¥196 &nbsp;·&nbsp; <a href="https://www.costcodle.com" target="_blank" rel="noopener" style="color:inherit">Costcodle</a> にインスパイアされました</p>
+    <p>ねだんは イギリスの テスコの ほんとうの ねだんです。£1 ＝ ¥212 で けいさん &nbsp;·&nbsp; <a href="https://www.costcodle.com" target="_blank" rel="noopener">Costcodle</a> にインスパイアされました</p>
   </footer>
 
+  <script src="names_ja.js"></script>
   <script src="game.js"></script>
 </body>
 </html>
